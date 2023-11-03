@@ -2,6 +2,7 @@
 from tkinter import *
 import random
 import os
+from PIL import ImageTk, Image
 
 
 class Jeu(Tk):
@@ -21,12 +22,9 @@ class Jeu(Tk):
         self.guess_button = Button(self, text="Deviner !", command=None)
         self.guess_button.pack()
 
-        image = self.choose_image()  # Choisir une image
+        self.labels = []
 
-        # Conteneur pour chaque image qui sera choisie par le jeu
-        self.image_frame = Frame(self, width=1000, height=1000)
-
-        self.image_frame.pack()
+        self.display_image()
 
     def choose_image(self):
         "Choisir une image au hasard"
@@ -38,6 +36,23 @@ class Jeu(Tk):
         print(image_choisie)
 
         return image_choisie
+
+    def display_image(self):
+        "Afficher l'image choisie"
+        image = self.choose_image()
+        image = Image.open("images/{}".format(image))
+        resized_image = image.resize((600, 800))
+
+        tkimage = ImageTk.PhotoImage(resized_image)
+        self.new_label(tkimage)
+
+    def new_label(self, img):
+        "Créer un nouveau conteneur pour l'image"
+        for label in self.labels:
+            label.destroy()
+        label_image = Label(self, image=img)
+        label_image.image = img
+        label_image.pack()
 
 
 jeu = Jeu()
