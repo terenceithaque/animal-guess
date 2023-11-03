@@ -26,24 +26,35 @@ class Jeu(Tk):
         self.guess_button.pack()
 
         self.labels = []
+        self.images_precedentes = []
 
+        self.image_name = ""
         self.display_image()
 
     def choose_image(self):
         "Choisir une image au hasard"
         # Dresser une liste de toutes les images existantes
         images = os.listdir("images")
-        # Choisir une image au hasard parmi toutes les possibilités
+
+        images_non_choisies = list(set(images) - set(self.images_precedentes))
         global image_choisie
-        image_choisie = random.randrange(len(images))
-        image_choisie = images[image_choisie]
-        print(image_choisie)
+        # Choisir une image au hasard parmi toutes les possibilités
+
+        image_choisie = random.choice(images_non_choisies)
+
+        if image_choisie not in self.images_precedentes:
+            self.ajouter_image_precedente()
 
         return image_choisie
+
+    def ajouter_image_precedente(self):
+        self.images_precedentes.append(image_choisie)
 
     def display_image(self):
         "Afficher l'image choisie"
         image = self.choose_image()
+        self.image_name = image
+
         image = Image.open("images/{}".format(image))
         resized_image = image.resize((600, 800))
 
@@ -61,7 +72,23 @@ class Jeu(Tk):
         self.labels.append(label_image)
 
     def guess(self):
-        self.display_image()
+        player_guess = self.guess_entry.get()
+        condition_game_over = joueur.score < -90
+        if player_guess in self.image_name:
+            joueur.update_score(15)
+            messagebox.showinfo(
+                "Correct !", "Vous gagnez 15 points. Votre score actuel : {}".format(joueur.score))
+            self.display_image()
+
+        else:
+            joueur.update_score(-15)
+            messagebox.showerror(
+                "Inccorrect !", "Vous perdez 15 points. Votre score actuel : {}".format(joueur.score))
+
+            if not condition_game_over:
+                self.display_image
+
+        joueur.game_over(condition_game_over, self)
 
 
 jeu = Jeu()
