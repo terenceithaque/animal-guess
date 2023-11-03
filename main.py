@@ -16,10 +16,10 @@ class Jeu(Tk):
         self.label_guess.pack()
 
         # Entrée dans laquelle le joueur devra entrer une suggestion d'animal
-        self.guess = Entry(self)
-        self.guess.pack(fill="x")
+        self.guess_entry = Entry(self)
+        self.guess_entry.pack(fill="x")
 
-        self.guess_button = Button(self, text="Deviner !", command=None)
+        self.guess_button = Button(self, text="Deviner !", command=self.guess)
         self.guess_button.pack()
 
         self.labels = []
@@ -31,6 +31,7 @@ class Jeu(Tk):
         # Dresser une liste de toutes les images existantes
         images = os.listdir("images")
         # Choisir une image au hasard parmi toutes les possibilités
+        global image_choisie
         image_choisie = random.randrange(len(images))
         image_choisie = images[image_choisie]
         print(image_choisie)
@@ -53,6 +54,11 @@ class Jeu(Tk):
         label_image = Label(self, image=img)
         label_image.image = img
         label_image.pack()
+
+        self.labels.append(label_image)
+
+    def guess(self):
+        self.display_image()
 
 
 jeu = Jeu()
