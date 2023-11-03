@@ -14,6 +14,14 @@ class Jeu(Tk):
     def __init__(self):
         super().__init__()  # Initialiser le constructeur
         # Indiquer au joueur ce qu'il doit faire
+
+        self.barre_menu = Menu(self, tearoff=0)
+        self.menu_jeu = Menu(self.barre_menu, tearoff=0)
+        self.menu_jeu.add_command(
+            label="Quitter le jeu", command=self.quit_game)
+
+        self.barre_menu.add_cascade(label="Jeu", menu=self.menu_jeu)
+        self.config(menu=self.barre_menu)
         self.label_guess = Label(
             self, text="Devinez quel animal est représenté sur l'image ci-dessous :")
         self.label_guess.pack()
@@ -89,6 +97,14 @@ class Jeu(Tk):
                 self.display_image
 
         joueur.game_over(condition_game_over, self)
+
+    def quit_game(self):
+        "Quitter le jeu"
+        ask_quit = messagebox.askquestion(
+            "Quitter", "Voulez-vous vraiment quitter le jeu maintenant ? Votre meilleur score sera sauvegardé.")
+        if ask_quit == "yes":
+            joueur.save_score()
+            self.destroy()
 
 
 jeu = Jeu()
