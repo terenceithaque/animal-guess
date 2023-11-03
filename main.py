@@ -3,6 +3,9 @@ from tkinter import *
 import random
 import os
 from PIL import ImageTk, Image
+from joueur import *
+
+joueur = Joueur()  # Créer un joueur
 
 
 class Jeu(Tk):
