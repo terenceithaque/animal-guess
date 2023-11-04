@@ -36,15 +36,18 @@ class Jeu(Tk):
         self.labels = []
         self.images_precedentes = []
 
+        self.images = []
+        self.n_images_choisies = 0
         self.image_name = ""
         self.display_image()
 
     def choose_image(self):
         "Choisir une image au hasard"
         # Dresser une liste de toutes les images existantes
-        images = os.listdir("images")
+        self.images = os.listdir("images")
 
-        images_non_choisies = list(set(images) - set(self.images_precedentes))
+        images_non_choisies = list(
+            set(self.images) - set(self.images_precedentes))
         global image_choisie
         # Choisir une image au hasard parmi toutes les possibilités
 
@@ -60,7 +63,15 @@ class Jeu(Tk):
 
     def display_image(self):
         "Afficher l'image choisie"
+
         image = self.choose_image()
+        self.n_images_choisies += 1
+        if self.n_images_choisies == len(self.images):
+            messagebox.showinfo(
+                "La partie est terminée", f"Toutes les images ont été tirées. La partie est terminée. Votre score total est de {joueur.score}, tandis que votre meilleur score est de {joueur.score_max}.")
+            joueur.save_score()
+            self.destroy()
+            return
         self.image_name = image
 
         image = Image.open("images/{}".format(image))
@@ -81,7 +92,12 @@ class Jeu(Tk):
 
     def guess(self):
         player_guess = self.guess_entry.get()
-        condition_game_over = joueur.score < -90
+        if player_guess == "":
+            messagebox.showinfo("Veuillez saisir un nom d'animal",
+                                "Vous n'avez fait aucune suggestion. Tant que ce sera le cas, aucun point ne vous sera attribué. Remplissez la barre située au dessus du bouton Deviner !")
+            return
+
+        condition_game_over = joueur.score <= -90
         if player_guess in self.image_name:
             joueur.update_score(15)
             messagebox.showinfo(
@@ -92,9 +108,6 @@ class Jeu(Tk):
             joueur.update_score(-15)
             messagebox.showerror(
                 "Inccorrect !", "Vous perdez 15 points. Votre score actuel : {}".format(joueur.score))
-
-            if not condition_game_over:
-                self.display_image
 
         joueur.game_over(condition_game_over, self)
 

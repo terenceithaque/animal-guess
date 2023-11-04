@@ -37,6 +37,6 @@ class Joueur:
         "Game Over"
         if condition:  # Si la condition donnée pour le Game Over est vérifiée
             messagebox.showerror("Vous avez perdu(e)",
-                                 "Vous avez perdu(e) et terminez la partie.")
+                                 f"Vous avez perdu(e) et terminez la partie. Votre score total est de {self.score} tandis que votre meilleur score est de {self.score_max}.")
             self.save_score()
             root.destroy()
